@@ -12,8 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 
-app.get('home', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'public.html'));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/notes', (req, res) => {
@@ -32,7 +32,7 @@ app.get('/api/notes', (req, res) => {
   });
 });
 
-app.post('/api/post', (req, res)=> {
+app.post('/api/notes', (req, res)=> {
 
   const notes = req.body;
   notes.id = uuidv4()
@@ -57,6 +57,32 @@ app.post('/api/post', (req, res)=> {
     }
   })
 })
+})
+
+app.delete("/api/notes/:id", (req, res) => {
+  fs.readFile('./db/db.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+  
+    const dbData = JSON.parse(data);
+  
+    const objectIdToRemove = req.params.id;
+    const objectIndexToRemove = dbData.findIndex(obj => obj.id === objectIdToRemove);
+    if (objectIndexToRemove !== -1) {
+      dbData.splice(objectIndexToRemove, 1);
+    }
+  
+    fs.writeFile('./db/db.json', JSON.stringify(dbData), 'utf8', (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+  
+      console.log(`Object with ID ${objectIdToRemove} has been deleted.}.`);
+    });
+  });
 })
 
 

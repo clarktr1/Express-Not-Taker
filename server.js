@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3001;
+const PORT = process.env.PORT || 3001;
 const path = require('path');
 const fs = require('fs');
 const {v4: uuidv4} = require('uuid')
@@ -86,6 +86,6 @@ app.delete("/api/notes/:id", (req, res) => {
 })
 
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log(`Server started.`);
 });
